@@ -1,0 +1,55 @@
+# 국보 입문 가이드 — 실행 설정
+# 검색·청킹 값은 코드가 아니라 여기서 바꿉니다 (F2005, F2006, F2014).
+# 값을 바꾼 뒤에는 앱을 다시 실행하세요. 청킹 값을 바꿨다면 문서도 다시 색인해야 합니다.
+
+app:
+  title: 국보 입문 가이드
+  data_dir: data                  # 프로젝트 폴더 기준 상대 경로
+
+llm:
+  base_url: https://api.openai.com/v1/   # OpenAI 호환 엔드포인트 (교육 과정에서는 SSAFY GMS 프록시 사용)
+  chat_model: gpt-5.4-nano
+  embedding_model: text-embedding-3-small
+  timeout: 60                     # 초
+  max_retries: 2
+
+vectorstore:
+  persist_dir: data/chroma
+  items_collection: heritage_items    # RAG 1 — 국보 메타데이터 (항목당 1청크)
+  docs_collection: heritage_docs      # RAG 2 — 위키백과 + 국가유산청 설명문 청크
+
+chunking:                         # 출처 종류별로 다르게 자른다 (F2016)
+  wiki:                           # 위키백과: 길고 문단이 많은 서술형
+    chunk_size: 1000
+    chunk_overlap: 200
+  official:                       # 국가유산청 설명문: 짧고 정제된 공식 해설
+    chunk_size: 800
+    chunk_overlap: 100
+
+retrieval:
+  top_k: 5                        # 외부 문서 청크 수 (선택 국보 메타데이터 1건은 항상 별도로 포함)
+  related_items_k: 2              # 메타데이터 컬렉션에서 함께 볼 관련 국보 수 (0이면 끔)
+  search_type: similarity         # similarity | mmr  (F2014)
+  mmr_fetch_k: 30                 # MMR: 후보를 넉넉히 가져올 수
+  mmr_lambda: 0.5                 # MMR: 1에 가까울수록 관련성, 0에 가까울수록 다양성
+  explore_candidates: 20          # 조건 탐색: 메타데이터에서 먼저 뽑을 후보 수 (F2011)
+
+collection:                       # 외부 문서 수집 (F2003, F2004)
+  max_queries: 4                  # 프롬프트 1이 뽑을 검색어 최대 수 (국보 자체 문서 검색어 포함)
+  search_limit: 5                 # 검색어 하나당 후보 수
+  max_selected: 5                 # 프롬프트 2가 한 번에 고를 문서 최대 수
+  min_doc_chars: 300              # 이보다 짧은 문서는 버림 (국보 자체 문서는 예외)
+
+wiki:
+  api_url: https://ko.wikipedia.org/w/api.php
+  min_interval: 0.5               # 호출 최소 간격(초) (NF2006)
+  max_retries: 4
+  timeout: 20
+
+khs:                              # 국가유산청 오픈API (키 불필요)
+  hosts:
+    - https://www.khs.go.kr
+    - https://www.cha.go.kr
+  min_interval: 0.3
+  max_retries: 4
+  timeout: 30

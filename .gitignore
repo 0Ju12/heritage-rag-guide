@@ -1,0 +1,14 @@
+# 비밀 정보 (NF2003)
+.env
+
+# 다시 만들 수 있는 것
+data/chroma/
+data/logs/
+data/wiki_manifest.json
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+venv/
+
+# 수집 원본(data/items.json, data/official/, data/wiki/)은 출처 기록용으로 남겨 둔다.

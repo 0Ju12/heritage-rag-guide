@@ -1,0 +1,13 @@
+[browser]
+gatherUsageStats = false
+
+[client]
+# 오류 상세(트레이스백)를 화면에 보여 주지 않는다 (NF2004)
+showErrorDetails = "none"
+toolbarMode = "minimal"
+
+[theme]
+primaryColor = "#2f7f78"
+backgroundColor = "#f7f3ea"
+secondaryBackgroundColor = "#efe8d8"
+textColor = "#1f2a2e"

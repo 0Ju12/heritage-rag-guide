@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>국보 입문 가이드</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Noto+Serif+KR:wght@600;700&display=swap" />
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <div id="bg" class="bg" aria-hidden="true"></div>
+  <header class="top">
+    <div class="brand">
+      <span class="seal" aria-hidden="true">寶</span>
+      <div>
+        <h1 id="title">국보 입문 가이드</h1>
+        <p id="tagline" class="muted"></p>
+      </div>
+    </div>
+    <div class="health" id="health" aria-live="polite"></div>
+  </header>
+
+  <div class="layout">
+    <aside class="side">
+      <div class="filters">
+        <label class="field"><span>분류</span><select id="cat-filter"><option value="전체">전체</option></select></label>
+        <label class="field"><span>시대</span><select id="era-filter"><option value="전체">전체</option></select></label>
+      </div>
+      <label class="field">
+        <span>국보 찾기 <small class="muted">옛 지정번호 순</small></span>
+        <input id="item-filter" type="search" placeholder="이름·번호·지역 (예: 1, 78호, 경주, 탑)" autocomplete="off" />
+      </label>
+      <p class="muted small" id="item-count"></p>
+      <ul id="item-list" class="item-list" role="listbox" aria-label="국보 목록"></ul>
+
+      <details class="settings">
+        <summary>검색 설정</summary>
+        <label class="field">
+          <span>외부 문서 근거 수 (Top-k): <b id="topk-val">5</b></span>
+          <input id="topk" type="range" min="1" max="15" value="5" />
+        </label>
+        <label class="field">
+          <span>검색 방식</span>
+          <select id="search-type">
+            <option value="similarity">유사도</option>
+            <option value="mmr">MMR (다양성)</option>
+          </select>
+        </label>
+      </details>
+      <label class="toggle"><input id="bg-toggle" type="checkbox" checked /> 국보 사진을 배경으로</label>
+      <p class="muted tiny">자료: 국가유산청 국가유산 검색 오픈API · 한국어 위키백과(CC BY-SA 4.0). 기록은 수집 시점 기준입니다.</p>
+    </aside>
+
+    <main class="main">
+      <div id="banner" class="banner hidden" role="alert"></div>
+
+      <section id="item-head" class="item-head hidden">
+        <figure id="item-photo" class="photo hidden"><img alt="" /><figcaption>사진: 국가유산청</figcaption></figure>
+        <div class="item-info">
+          <h2 id="item-name"></h2>
+          <p id="item-order" class="muted small"></p>
+          <dl id="item-facts" class="facts"></dl>
+          <div id="item-links" class="links"></div>
+          <p class="muted tiny-note">유튜브·네이버는 검색 결과로 연결됩니다. 관련 링크는 답변의 근거가 아닙니다.</p>
+        </div>
+      </section>
+
+      <nav class="tabs" role="tablist">
+        <button class="tab active" data-tab="qa" role="tab">💬 질의응답</button>
+        <button class="tab" data-tab="guide" role="tab">🧭 관람 해설</button>
+        <button class="tab" data-tab="fact" role="tab">⚖️ 통설 판정</button>
+        <button class="tab" data-tab="explore" role="tab">🔎 조건으로 찾기</button>
+      </nav>
+
+      <section class="panel" data-panel="qa">
+        <div id="qa-empty" class="empty">왼쪽에서 국보를 고르거나 ‘조건으로 찾기’에서 찾아보세요.</div>
+        <div id="qa-examples" class="chips hidden"></div>
+        <div id="chat-log" class="chat-log"></div>
+        <form id="chat-form" class="composer hidden">
+          <input id="chat-input" type="text" maxlength="500" placeholder="이 국보에 대해 궁금한 점을 물어보세요" autocomplete="off" />
+          <button type="submit" class="primary">보내기</button>
+          <button type="button" id="clear-chat" class="ghost" title="이 국보의 대화 지우기">지우기</button>
+        </form>
+      </section>
+
+      <section class="panel hidden" data-panel="guide">
+        <div class="empty need-item">왼쪽에서 국보를 먼저 고르세요.</div>
+        <div class="has-item hidden">
+          <p class="muted">현장에 가기 전에 볼 내용을 근거와 함께 정리합니다.</p>
+          <button id="guide-btn" class="primary">관람 해설 카드 만들기</button>
+          <div id="guide-out"></div>
+        </div>
+      </section>
+
+      <section class="panel hidden" data-panel="fact">
+        <div class="empty need-item">왼쪽에서 국보를 먼저 고르세요.</div>
+        <div class="has-item hidden">
+          <form id="fact-form" class="composer">
+            <input id="fact-input" type="text" maxlength="500" placeholder="들은 이야기를 적어 주세요" autocomplete="off" />
+            <button type="submit" class="primary">판정하기</button>
+          </form>
+          <div id="fact-out"></div>
+        </div>
+      </section>
+
+      <section class="panel hidden" data-panel="explore">
+        <form id="explore-form" class="composer">
+          <input id="explore-input" type="text" maxlength="300" placeholder="예: 통일신라 시대에 만든 경주의 석탑" autocomplete="off" />
+          <button type="submit" class="primary">찾기</button>
+        </form>
+        <div id="explore-examples" class="chips"></div>
+        <div id="explore-out"></div>
+      </section>
+
+      <div id="status" class="status hidden" aria-live="polite"><span class="spinner"></span><span id="status-text"></span></div>
+    </main>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
