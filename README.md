@@ -1,5 +1,7 @@
 # 🏛️ 국보 입문 가이드 — 근거를 인용하는 RAG 국가유산 Q&A
 
+[![tests](https://github.com/0Ju12/heritage-rag-guide/actions/workflows/test.yml/badge.svg)](https://github.com/0Ju12/heritage-rag-guide/actions/workflows/test.yml) · [프로젝트 상세 (설계 판단·회고)](https://0ju12.github.io/projects/ssafy-16.html) · [인용 검증 설계 글](https://0ju12.github.io/posts/2026-11-rag-citation-verify.html)
+
 국보를 고르고 질문하면 **국보 메타데이터 · 한국어 위키백과 · 국가유산청 공식 설명**에서 근거를 찾아
 문장마다 `[근거 N]`을 붙여 답하고, **실제로 인용한 근거만** 원문 링크와 함께 보여 주는 LLM 서비스입니다.
 문서에서 확인되지 않는 내용은 추측하지 않고 "제공된 문서에서 확인되지 않습니다"라고 답합니다.
@@ -17,6 +19,10 @@
 ```
 
 ## 화면
+
+![데모 — 국보를 고르고 질문하면 실제로 인용한 근거만 표시](docs/images/demo.gif)
+
+*API 키 없이 도는 데모 모드(`python scripts/demo_offline.py`)로 녹화 — 가짜 LLM의 고정 답변이며, 답변 원문에 섞인 존재하지 않는 `[근거 9]`는 코드 검증으로 지워져 화면에 나오지 않습니다.*
 
 | 질의응답 — 실제로 인용한 근거만 표시 | 조건으로 국보 찾기 |
 |---|---|
